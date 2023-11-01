@@ -66,6 +66,19 @@ RUN echo "nginx hard nofile 200000" >> /etc/security/limits.conf
 
 RUN echo "fs.file-max = 200000" >> /etc/sysctl.conf
 
+RUN if ["$ENVIRONMENT" = "dev"]; then \
+    # xdebug
+    COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/; \
+    RUN install-php-extensions xdebug; \
+    ENV PHP_IDE_CONFIG 'serverName=old.???'; \
+    RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    RUN echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    RUN echo "xdebug.client_host=docker.for.mac.localhost" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    RUN echo "xdebug.client_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    RUN echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    RUN echo "xdebug.idekey = PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    fi
+
 EXPOSE 9000
 
 WORKDIR /var/www/

@@ -1,6 +1,6 @@
 version: '3.9'
 networks:
-   crabbit:
+   service24:
      driver: bridge
 
 services:
@@ -16,7 +16,7 @@ services:
     ports:
       - "9220:9200"
     networks:
-      - crabbit
+      - service24
 
   nginx:
     build:
@@ -38,7 +38,7 @@ services:
     depends_on:
       - php
     networks:
-      - crabbit
+      - service24
 
   mysql:
     image: mysql:8.0
@@ -59,7 +59,7 @@ services:
     depends_on:
       - es01
     networks:
-      - crabbit
+      - service24
 
   redis:
     image: redis:7.2-rc-alpine3.18
@@ -71,7 +71,7 @@ services:
     depends_on:
       - es01
     networks:
-      - crabbit
+      - service24
 
   php:
     build:
@@ -90,4 +90,4 @@ services:
       - es01
       - mysql
     networks:
-      - crabbit
+      - service24
