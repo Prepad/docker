@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run -it --rm --name certbot -v "/home/trainet/project/volumes/letsencrypt:/etc/letsencrypt" -v "/home/trainet/project/volumes/lib/letsencrypt:/var/lib/letsencrypt" -p 80:80 certbot/certbot renew

@@ -1,0 +1,8 @@
+volumes/backend
+volumes/mysql
+volumes/letsencrypt
+nginx/logs
+.idea
+.env
+php/cronlogs
+/volumes/backend/
