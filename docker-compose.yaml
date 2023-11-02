@@ -76,6 +76,10 @@ services:
   php:
     build:
       context: ./php/
+      args:
+        user: ${USER}
+        uid: ${UID}
+        gid: ${GID}
     restart: always
     environment:
       SERVICE_TAGS: ${TAG}

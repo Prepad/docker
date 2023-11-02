@@ -1,5 +1,16 @@
 FROM php:8.2-fpm
 
+ARG user
+ARG uid
+ARG gid
+
+RUN echo $gid
+
+RUN groupadd -g $gid mygroup && \
+    useradd -u $uid -g $gid -ms /bin/bash myuser
+
+USER $user:mygroup
+
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
     && php composer-setup.php\
     && php -r "unlink('composer-setup.php');"\
@@ -65,6 +76,8 @@ RUN echo "nginx soft nofile 200000" >> /etc/security/limits.conf
 RUN echo "nginx hard nofile 200000" >> /etc/security/limits.conf
 
 RUN echo "fs.file-max = 200000" >> /etc/sysctl.conf
+
+
 
 RUN if ["$ENVIRONMENT" = "dev"]; then \
     # xdebug
