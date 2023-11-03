@@ -91,6 +91,7 @@ services:
       - ./php/pool.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./php/supervisor/conf.d:/etc/supervisor/conf.d
       - ./php/cronlogs/cron.log:/var/log/cron.log
+      - ./php/xdebug/xdebug.log:/var/log/xdebug.log
       - ./php/script.sh:/usr/bin/script.sh
     depends_on:
       - es01
