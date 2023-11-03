@@ -1,7 +1,8 @@
 version: '3.9'
 networks:
-   service24:
-     driver: bridge
+  service24:
+    driver: bridge
+
 
 services:
   es01:
@@ -13,6 +14,8 @@ services:
       - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
     volumes:
       - ./data/elastic:/var/lib/elasticsearch/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "9220:9200"
     networks:
@@ -77,6 +80,7 @@ services:
     user: '${UID}:${GID}'
     build:
       context: ./php/
+      dockerfile: Dockerfile.local
     restart: always
     environment:
       SERVICE_TAGS: ${TAG}
