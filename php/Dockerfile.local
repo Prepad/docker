@@ -1,15 +1,20 @@
 FROM php:8.2-fpm
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
-    && php composer-setup.php\
-    && php -r "unlink('composer-setup.php');"\
-    && mv composer.phar /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+ARG UNAME=testuser
+ARG uid=1000
+ARG gid=1000
+RUN groupadd -g $gid -o $UNAME
+RUN useradd -m -u $uid -g $gid -o -s /bin/bash $UNAME
+RUN usermod -aG sudo $UNAME
 
 # Install dependencies
 RUN apt-get update \
     && apt-get install -y \
     iputils-ping \
     cron \
+    git\
     zlib1g-dev \
     libzip-dev \
     procps \
@@ -64,13 +69,16 @@ RUN echo "nginx hard nofile 200000" >> /etc/security/limits.conf
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 RUN install-php-extensions xdebug
 ENV PHP_IDE_CONFIG 'serverName=service24'
-RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.client_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN echo "xdebug.log=/dev/stdout" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.idekey = PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN echo "fs.file-max = 200000" >> /etc/sysctl.conf
+
+USER $UNAME
 
 WORKDIR /var/www/

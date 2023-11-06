@@ -1,14 +1,12 @@
 FROM php:8.2-fpm
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
-    && php composer-setup.php\
-    && php -r "unlink('composer-setup.php');"\
-    && mv composer.phar /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install dependencies
 RUN apt-get update \
     && apt-get install -y \
     iputils-ping \
+    git \
     cron \
     zlib1g-dev \
     libzip-dev \

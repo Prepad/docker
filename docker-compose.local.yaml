@@ -5,21 +5,21 @@ networks:
 
 
 services:
-  es01:
-    image: registry.dev.pyrobyte.ru/pyrodock/crabbit_backend-es01
-    restart: always
-    environment:
-      - node.name=es01
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
-    volumes:
-      - ./data/elastic:/var/lib/elasticsearch/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "9220:9200"
-    networks:
-      - service24
+  # es01:
+  #   image: registry.dev.pyrobyte.ru/pyrodock/crabbit_backend-es01
+  #   restart: always
+  #   environment:
+  #     - node.name=es01
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+  #   volumes:
+  #     - ./data/elastic:/var/lib/elasticsearch/data
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   ports:
+  #     - "9220:9200"
+  #   networks:
+  #     - service24
 
   nginx:
     build:
@@ -59,8 +59,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SERVICE_TAGS: ${TAG}
       SERVICE_NAME: mysql
-    depends_on:
-      - es01
+#    depends_on:
+#      - es01
     networks:
       - service24
 
@@ -94,7 +94,7 @@ services:
       - ./php/xdebug/xdebug.log:/var/log/xdebug.log
       - ./php/script.sh:/usr/bin/script.sh
     depends_on:
-      - es01
       - mysql
+#      - es01
     networks:
       - service24
